@@ -4,15 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class nykaa {
-
+	
+	public static WebDriverWait wait;
+	
 	public static void main(String[] args) throws InterruptedException {
 
 		System.setProperty("webdriver.chrome.driver", "./drivers/chromedriver.exe");
@@ -53,11 +58,16 @@ public class nykaa {
 		Thread.sleep(3000);
 		driver.findElement(By.xpath("//span[text()='customer top rated']")).click();
 		Thread.sleep(3000);
+				
+		js.executeScript("window.scrollBy(0,670)");
+	
+		wait = new WebDriverWait(driver, 30);
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='Category']"))).click();
 		
-		js.executeScript("window.scrollBy(0,500)");
-		driver.findElement(By.xpath("//div[text()='Category']")).click();
 		Thread.sleep(3000);
-		driver.findElement(By.xpath("//label[@for='chk_Shampoo_undefined']/span")).click();
+		
+		wait = new WebDriverWait(driver,30);
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='chk_Shampoo_undefined']/span"))).click();
 		
 		//To verify the "SHAMPOO" is filtered
 		String selectedText = driver.findElement(By.xpath("//li[text()='Shampoo']")).getText();
@@ -69,7 +79,10 @@ public class nykaa {
 		}
 		
 		//Switching to the window2(L'Oreal Paris Colour Protect Shampoo) page
-		driver.findElement(By.xpath("//span[text()=\"L'Oreal Paris Colour Protect Shampoo\"]")).click();
+		wait = new WebDriverWait(driver,30);
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()=\"L'Oreal Paris Colour Protect Shampoo\"]"))).click();
+		//driver.findElement(By.xpath("//span[text()=\"L'Oreal Paris Colour Protect Shampoo\"]")).click();
+		
 		Set<String> windows2 = driver.getWindowHandles();
 		List<String> noOfWindows2 = new ArrayList<String>(windows2);
 		noOfWindows.addAll(windows2);
@@ -77,17 +90,18 @@ public class nykaa {
 		
 		
 		//click and print the price of the shampoo
-		driver.findElement(By.xpath("//span[text()='175ml']")).click();
-		Thread.sleep(3000);
+		wait = new WebDriverWait(driver, 30);
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='175ml']"))).click();
+		
 		String priceOfShampoo = driver.findElement(By.xpath("//div[@class='clearfix product-des__details']//span[2]/span")).getText();
 		System.out.println("SHAMPOO PRICE IS:"+priceOfShampoo);
-		Thread.sleep(3000);
 		
 		//Select the quantity(ML) of the shampoo and add it to the BAG
-		driver.findElement(By.xpath("//div[@class='pull-left']/div/button")).click();
+		wait = new WebDriverWait(driver, 30);
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class='pull-left']/div/button"))).click();
+		
 		Thread.sleep(3000);
 		driver.findElement(By.className("AddBagIcon")).click();
-		Thread.sleep(3000);
 		
 		//Print the grand total amount
 		String grandTotal = driver.findElement(By.xpath("//div[@class='payment-tbl-data']/div[4]/div[2]")).getText();
@@ -112,6 +126,11 @@ public class nykaa {
 		Thread.sleep(3000);
 		driver.close();		
 		
+	}
+
+	private static Function<? super WebDriver, Object> ExpectedConditions(By xpath) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 
